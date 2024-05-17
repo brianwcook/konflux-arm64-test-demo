@@ -33,12 +33,17 @@ spec:
           - name: SNAPSHOT
             value: $(params.SNAPSHOT)
           script: |
-            echo -e "Example test task for the Snapshot:\n ${SNAPSHOT}"
+            echo -e "Snapshot:\n 
+            echo -e ${SNAPSHOT} | jq "."
             # extract image pullspec here
-            # podman run --rm --entrypoint="sh /hello-world.sh" $image
+            IMAGE=jq '.components.[] | select(.name=="arm64-test-demo")' | jq .containerImage
+            
             // Run custom tests for the given Snapshot here
             // After the tests finish, record the overall result in the RESULT variable
-            RESULT="SUCCESS"
+            if podman run --rm --entrypoint="/hello-world.sh" $IMAGE | grep -Fxq 'Hello World!'; then
+              RESULT="SUCCESS"
+              echo $RESULT
+            fi
 
             // Output the standardized TEST_OUTPUT result in JSON form
             TEST_OUTPUT=$(jq -rc --arg date $(date +%s) --arg RESULT "${RESULT}" --null-input \

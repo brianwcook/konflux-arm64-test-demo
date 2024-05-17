@@ -18,7 +18,6 @@ spec:
       type: string
   tasks:
     - name: task-1
-      description: Placeholder task that prints the Snapshot and outputs standard TEST_OUTPUT
       params:
         - name: SNAPSHOT
           value: $(params.SNAPSHOT)
@@ -34,8 +33,9 @@ spec:
           - name: SNAPSHOT
             value: $(params.SNAPSHOT)
           script: |
-            dnf -y install jq
             echo -e "Example test task for the Snapshot:\n ${SNAPSHOT}"
+            # extract image pullspec here
+            # podman run --rm --entrypoint="sh /hello-world.sh" $image
             // Run custom tests for the given Snapshot here
             // After the tests finish, record the overall result in the RESULT variable
             RESULT="SUCCESS"
